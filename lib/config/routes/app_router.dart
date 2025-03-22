@@ -7,7 +7,7 @@ import 'package:techconnect_mobile/presentation/screens/auth/reset_password_scre
 import 'package:techconnect_mobile/presentation/screens/home_screen.dart';
 
 final appRouter = GoRouter(
-  initialLocation: LoginScreen.routeName,
+  initialLocation: CheckAuthScreen.routeName,
   routes: [
     GoRoute(path: LoginScreen.routeName, builder: (context, state) => const LoginScreen()),
     GoRoute(path: RegisterScreen.routeName, builder: (context, state) => const RegisterScreen()),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:provider/provider.dart';
@@ -10,6 +11,7 @@ import 'package:techconnect_mobile/models/user_dto.dart';
 class AuthService extends ChangeNotifier {
 
   static final String _baseUrl = '172.17.0.1:8090';
+  final storage = FlutterSecureStorage();
   UserDto? _userDto = null;
 
   UserDto? get userDto => _userDto;
@@ -59,7 +61,7 @@ class AuthService extends ChangeNotifier {
     if (response.statusCode == 200) {
       final user = UserDto.fromRawJson(response.body);
       setUserDto = user;
-      // _saveInStorage(decodeResponse);
+      _saveInStorage(decodeResponse);
       return null;
     }
 
@@ -101,6 +103,49 @@ class AuthService extends ChangeNotifier {
     if (decodeResponse.containsKey("errorCode")) return decodeResponse["message"];
 
     return null;
+  }
+
+  Future signOut() async {
+    await storage.deleteAll();
+    return;
+  }
+
+  Future<String> isAuthenticated() async {
+    print("ENTRA");
+    final token = await storage.read(key: "accessToken");
+    final firstLogin = await storage.read(key: "firstLogin");
+    Map<String, String> headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token'
+    };
+
+    print("TOKEN $token");
+    final url = Uri.parse('http://$_baseUrl/api/security/auth/validate?token=$token');
+    final response = await http.post(url, headers: headers, );
+    print("llega aca");
+    if (response.statusCode == 200) {
+      print("ESTA ACA DENTRO");
+      print('$userDto');
+      if (firstLogin != "true") {
+        // Set logged user profile in the context of app
+        // BuildContext? context = ContextService().context!;
+        // final userProfileService = Provider.of<UserProfileService>(context, listen: false);
+        // await userProfileService.getUserProfileLogged();
+      }
+      return token!;
+    }
+    await signOut();
+    return '';
+  }
+
+  Future _saveInStorage(Map<String, dynamic> decodeResponse) async {
+    await storage.write(key: "accessToken", value: decodeResponse["accessToken"]);
+    await storage.write(key: "refreshToken", value: decodeResponse["refreshToken"]);
+    await storage.write(key: "idUser", value: decodeResponse["id"].toString());
+    await storage.write(key: "username", value: decodeResponse["username"]);
+    await storage.write(key: "email", value: decodeResponse["email"]);
+    await storage.write(key: "firstLogin", value: decodeResponse["firstLogin"].toString());
+    // await storage.write(key: "roles", value: decodeResponse["roles"]);
   }
 
 }

@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
+import 'package:techconnect_mobile/presentation/screens/auth/login_screen.dart';
+import 'package:techconnect_mobile/presentation/screens/home_screen.dart';
+import 'package:techconnect_mobile/services/auth_service.dart';
 
 class CheckAuthScreen extends StatelessWidget {
 
@@ -8,6 +13,30 @@ class CheckAuthScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    final authService = context.read<AuthService>();
+
+    return Scaffold(
+      body: Center(
+        child: FutureBuilder(
+          future: authService.isAuthenticated(),
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) 
+              return Text('Espere');
+            
+            Future.microtask(() {
+              if (snapshot.data == '') {
+                context.push(LoginScreen.routeName);
+                return Container();
+              }
+              if (snapshot.data != '') {
+                context.push(HomeScreen.routeName);
+                return Container();
+              }
+            });            
+            return Container();
+          }
+        )
+      ),
+    );
   }
 }
