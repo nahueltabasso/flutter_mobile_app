@@ -111,7 +111,6 @@ class AuthService extends ChangeNotifier {
   }
 
   Future<String> isAuthenticated() async {
-    print("ENTRA");
     final token = await storage.read(key: "accessToken");
     final firstLogin = await storage.read(key: "firstLogin");
     Map<String, String> headers = {
@@ -122,9 +121,7 @@ class AuthService extends ChangeNotifier {
     print("TOKEN $token");
     final url = Uri.parse('http://$_baseUrl/api/security/auth/validate?token=$token');
     final response = await http.post(url, headers: headers, );
-    print("llega aca");
     if (response.statusCode == 200) {
-      print("ESTA ACA DENTRO");
       print('$userDto');
       if (firstLogin != "true") {
         // Set logged user profile in the context of app

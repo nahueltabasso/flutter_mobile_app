@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:techconnect_mobile/config/routes/app_router.dart';
 import 'package:techconnect_mobile/config/theme/app_theme.dart';
+import 'package:techconnect_mobile/presentation/blocs/profile/complete-profile/complete_profile_bloc.dart';
 import 'package:techconnect_mobile/services/auth_service.dart';
 
 void main() => runApp(AppState());
@@ -13,6 +15,7 @@ class AppState extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => AuthService()),
+        BlocProvider(create: (context) => CompleteProfileBloc("hoal")),
       ],
       child: const MyApp(),
     );
