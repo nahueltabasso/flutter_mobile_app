@@ -60,7 +60,7 @@ class CustomFormInput extends StatelessWidget {
       ),
       autocorrect: autocorrect,
       keyboardType: keyboardType,
-      initialValue: initialValue,
+      initialValue: controller == null ? initialValue : null,
       obscureText: obscureText!,
       controller: controller,
       enabled: enabled,

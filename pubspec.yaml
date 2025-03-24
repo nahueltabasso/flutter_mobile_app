@@ -39,6 +39,7 @@ dependencies:
   formz: ^0.5.0+1
   flutter_secure_storage: ^9.0.0
   im_stepper: ^1.0.1+1
+  intl: ^0.17.0
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

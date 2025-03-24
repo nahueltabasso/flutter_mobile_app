@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:techconnect_mobile/config/shared/constans.dart';
 import 'package:techconnect_mobile/presentation/screens/home_screen.dart';
+import 'package:techconnect_mobile/presentation/screens/profile/complete-profile/complete_profile_screen.dart';
 import 'package:techconnect_mobile/presentation/widgets/auth/inputs/password_login_input.dart';
 import 'package:techconnect_mobile/presentation/widgets/auth/inputs/username_login_input.dart';
 import 'package:techconnect_mobile/services/auth_service.dart';
@@ -68,7 +69,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       isLoading: false
     ));
 
-    Navigator.push(event.context, MaterialPageRoute(builder: (context) => HomeScreen()));
+    Navigator.push(event.context, MaterialPageRoute(builder: (context) => CompleteProfileScreen()));
     DialogService.showSuccessDialogAlert(event.context, 'Bienvenido', CommonConstant.LOGIN_SUCCESS_MESSAGE, null);
   }
 

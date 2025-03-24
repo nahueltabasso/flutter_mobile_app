@@ -5,6 +5,7 @@ import 'package:techconnect_mobile/config/routes/app_router.dart';
 import 'package:techconnect_mobile/config/theme/app_theme.dart';
 import 'package:techconnect_mobile/presentation/blocs/profile/complete-profile/complete_profile_bloc.dart';
 import 'package:techconnect_mobile/services/auth_service.dart';
+import 'package:techconnect_mobile/services/user_profile_service.dart';
 
 void main() => runApp(AppState());
 
@@ -15,7 +16,8 @@ class AppState extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => AuthService()),
-        BlocProvider(create: (context) => CompleteProfileBloc("hoal")),
+        ChangeNotifierProvider(create: (context) => UserProfileService()),
+        BlocProvider(create: (context) => CompleteProfileBloc()),
       ],
       child: const MyApp(),
     );

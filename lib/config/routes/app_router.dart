@@ -8,7 +8,7 @@ import 'package:techconnect_mobile/presentation/screens/home_screen.dart';
 import 'package:techconnect_mobile/presentation/screens/profile/complete-profile/complete_profile_screen.dart';
 
 final appRouter = GoRouter(
-  initialLocation: CompleteProfileScreen.routeName,
+  initialLocation: LoginScreen.routeName,
   routes: [
     GoRoute(path: LoginScreen.routeName, builder: (context, state) => const LoginScreen()),
     GoRoute(path: RegisterScreen.routeName, builder: (context, state) => const RegisterScreen()),

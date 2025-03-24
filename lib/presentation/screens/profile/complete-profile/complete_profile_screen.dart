@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:im_stepper/stepper.dart';
 import 'package:techconnect_mobile/presentation/blocs/profile/complete-profile/complete_profile_bloc.dart';
+import 'package:techconnect_mobile/presentation/screens/profile/complete-profile/forms/personal_data_form.dart';
+import 'package:techconnect_mobile/presentation/screens/profile/complete-profile/forms/study_hobby_form.dart';
+import 'package:techconnect_mobile/presentation/screens/profile/complete-profile/forms/upload_profile_photo_form.dart';
 
 class CompleteProfileScreen extends StatelessWidget {
   static const String routeName = '/complete-profile';
@@ -10,6 +13,9 @@ class CompleteProfileScreen extends StatelessWidget {
 
 @override
 Widget build(BuildContext context) {
+  final completeProfileState = context.watch<CompleteProfileBloc>().state;
+  context.read<CompleteProfileBloc>().add(SetUserEmail(context));
+
   return Scaffold(
     appBar: AppBar(
       title: const Center(child: Text('Completa tu Perfil')),
@@ -46,16 +52,16 @@ Widget build(BuildContext context) {
                   ),
                   BlocBuilder<CompleteProfileBloc, CompleteProfileState>(
                     builder: (context, state) {
-                      if (state.isLoading) {
-                        return const Column(
-                          children: [
-                            SizedBox(height: 50),
-                            Center(
-                              child: CircularProgressIndicator(),
-                            ),
-                          ],
-                        );
-                      }
+                      // if (state.isLoading) {
+                      //   return const Column(
+                      //     children: [
+                      //       SizedBox(height: 50),
+                      //       Center(
+                      //         child: CircularProgressIndicator(),
+                      //       ),
+                      //     ],
+                      //   );
+                      // }
                       return SizedBox(
                         height: 570,
                         width: 500,
@@ -64,12 +70,12 @@ Widget build(BuildContext context) {
                           physics: const NeverScrollableScrollPhysics(),
                           controller: state.pageController,
                           children: [
-                            // PersonalDataForm(email: state.userEmail),
-                            // StudyHobbyForm(),
-                            // UploadProfilePhotoForm(),
-                            Container(color: Colors.red,),
-                            Container(color: Colors.green,),
-                            Container(color: Colors.blue,),
+                            PersonalDataForm(),
+                            StudyHobbyForm(),
+                            UploadProfilePhotoForm(),
+                            // Container(color: Colors.red,),
+                            // Container(color: Colors.green,),
+                            // Container(color: Colors.blue,),
                           ],
                         ),
                       );
@@ -105,7 +111,7 @@ Widget build(BuildContext context) {
         backgroundColor: MaterialStatePropertyAll<Color>(Colors.lightBlue),
       ),
       onPressed: () {
-        // context.read<CompleteProfileBloc>().add(SaveProfile());
+        context.read<CompleteProfileBloc>().add(SaveProfile(context));
       },
       child: const Text(
         'Guardar',
