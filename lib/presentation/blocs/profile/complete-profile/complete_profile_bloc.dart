@@ -6,7 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:techconnect_mobile/models/http_error_dto.dart';
 import 'package:techconnect_mobile/models/user_profile_dto.dart';
-import 'package:techconnect_mobile/presentation/screens/home_screen.dart';
+import 'package:techconnect_mobile/presentation/screens/profile/complete-profile/forms/location_form.dart';
 import 'package:techconnect_mobile/presentation/widgets/profiles/inputs/first_name_input.dart';
 import 'package:techconnect_mobile/presentation/widgets/profiles/inputs/last_name_input.dart';
 import 'package:techconnect_mobile/presentation/widgets/profiles/inputs/phone_number_input.dart';
@@ -16,6 +16,7 @@ import 'package:techconnect_mobile/services/user_profile_service.dart';
 
 part 'complete_profile_event.dart';
 part 'complete_profile_state.dart';
+
 class CompleteProfileBloc extends Bloc<CompleteProfileEvent, CompleteProfileState> {
   CompleteProfileBloc() : super(CompleteProfileState.initial()) {
     on<StepChanged>((event, emit) => _onStepChanged(event, emit));
@@ -86,7 +87,7 @@ class CompleteProfileBloc extends Bloc<CompleteProfileEvent, CompleteProfileStat
       if (response != null) {
         if (response is UserProfileDto) {
           emit(state.copyWith(isLoading: false));
-          Navigator.push(event.context, MaterialPageRoute(builder: (context) => const HomeScreen()));
+          Navigator.push(event.context, MaterialPageRoute(builder: (context) => const LocationForm()));
           DialogService.showSuccessDialogAlert(event.context, 'Perfil creado correctamente', '', null);
         } 
 

@@ -6,6 +6,8 @@ import 'package:techconnect_mobile/presentation/screens/auth/register_screen.dar
 import 'package:techconnect_mobile/presentation/screens/auth/reset_password_screen.dart';
 import 'package:techconnect_mobile/presentation/screens/home_screen.dart';
 import 'package:techconnect_mobile/presentation/screens/profile/complete-profile/complete_profile_screen.dart';
+import 'package:techconnect_mobile/presentation/screens/profile/complete-profile/forms/invite_friends_form.dart';
+import 'package:techconnect_mobile/presentation/screens/profile/complete-profile/forms/location_form.dart';
 
 final appRouter = GoRouter(
   initialLocation: LoginScreen.routeName,
@@ -17,5 +19,7 @@ final appRouter = GoRouter(
     GoRoute(path: CheckAuthScreen.routeName, builder: (context, state) => const CheckAuthScreen()),
     GoRoute(path: HomeScreen.routeName, builder: (context, state) => const HomeScreen()),
     GoRoute(path: CompleteProfileScreen.routeName, builder: (context, state) => CompleteProfileScreen()),
+    GoRoute(path: LocationForm.routeName, builder: (context, state) => const LocationForm()),
+    GoRoute(path: InviteFriendsForm.routeName, builder: (context, state) => const InviteFriendsForm()),
   ]
 );
