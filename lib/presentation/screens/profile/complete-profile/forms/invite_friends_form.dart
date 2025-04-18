@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:techconnect_mobile/models/user_profile_dto.dart';
 import 'package:techconnect_mobile/presentation/screens/home_screen.dart';
 import 'package:techconnect_mobile/presentation/widgets/invite_friend_card.dart';
+import 'package:techconnect_mobile/services/dialog_service.dart';
 import 'package:techconnect_mobile/services/user_profile_service.dart';
 
 class InviteFriendsForm extends StatelessWidget {
@@ -14,6 +15,7 @@ class InviteFriendsForm extends StatelessWidget {
   const InviteFriendsForm({super.key, this.showWelcomeDialog = false});
 
   Future<List<UserProfileDto>> _loadNearFriends(BuildContext context) async {
+    await Future.delayed(const Duration(seconds: 2));
     final userProfileService = context.read<UserProfileService>();
     final userProfileId = userProfileService.loggedUserProfile?.id;
 
@@ -41,6 +43,11 @@ class InviteFriendsForm extends StatelessWidget {
     );
   }
 
+  void _showHomeDialog(BuildContext context) {
+    context.push(HomeScreen.routeName);
+    DialogService.showSuccessDialogAlert(context, 'Bienvenido', 'Bienvenido a TechConnect', null);
+  }
+
   @override
   Widget build(BuildContext context) {
     // if (showWelcomeDialog == true) {
@@ -48,7 +55,7 @@ class InviteFriendsForm extends StatelessWidget {
     //     _showWelcomeDialog(context);
     //   });
     // }
-
+    
     return Scaffold(
       appBar: AppBar(
         title: const Text('Sugerencia de amigos'),
@@ -75,10 +82,10 @@ class InviteFriendsForm extends StatelessWidget {
             children: [
               Padding(
                 padding: const EdgeInsets.only(top: 10),
-                child: ListView.builder(
-                  itemCount: userProfileList.length,
-                  itemBuilder: (context, index) =>
-                      InviteFriendCard(userProfileDto: userProfileList[index]),
+                child:  ListView.builder(
+                    itemCount: userProfileList.length,
+                    itemBuilder: (context, index) =>
+                        InviteFriendCard(userProfileDto: userProfileList[index]),
                 ),
               ),
               Positioned(
@@ -91,7 +98,8 @@ class InviteFriendsForm extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       ElevatedButton(
-                        onPressed: () => HomeScreen.routeName,
+                        // onPressed: () => HomeScreen.routeName,
+                        onPressed: () => _showHomeDialog(context),
                         style: const ButtonStyle(
                           backgroundColor:
                               MaterialStatePropertyAll<Color>(Colors.grey),
@@ -102,7 +110,8 @@ class InviteFriendsForm extends StatelessWidget {
                         ),
                       ),
                       ElevatedButton(
-                        onPressed: () => context.push(HomeScreen.routeName),
+                        // onPressed: () => HomeScreen.routeName,
+                        onPressed: () => _showHomeDialog(context),
                         style: const ButtonStyle(
                           backgroundColor:
                               MaterialStatePropertyAll<Color>(Colors.lightBlue),

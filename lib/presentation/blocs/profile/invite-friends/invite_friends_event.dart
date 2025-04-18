@@ -9,6 +9,14 @@ sealed class InviteFriendsEvent extends Equatable {
 
 class LoadNearFriends extends InviteFriendsEvent {}
 
-class SkipInviteFriends extends InviteFriendsEvent {}
+class InviteFriend extends InviteFriendsEvent {
 
-class FinishInviteFriends extends InviteFriendsEvent {}
+  final UserProfileDto fromUser;
+  final UserProfileDto toUser;
+
+  const InviteFriend(this.fromUser, this.toUser);
+
+  @override
+  List<Object> get props => [fromUser, toUser];
+}
+

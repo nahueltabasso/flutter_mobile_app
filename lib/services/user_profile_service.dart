@@ -157,7 +157,7 @@ class UserProfileService extends ChangeNotifier {
     return UserProfileDto.fromRawJson(response.body);
   }
 
-  Future<FriendRequestDto?> sendFriendRequest(FriendRequestDto dto, BuildContext context) async {
+  Future<FriendRequestDto?> sendFriendRequest(FriendRequestDto dto) async {
     Map<String, String> headers = {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer ${await storage.read(key: 'accessToken')}'

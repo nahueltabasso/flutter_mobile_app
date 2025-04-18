@@ -21,7 +21,7 @@ class AppState extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => UserProfileService()),
         BlocProvider(create: (context) => CompleteProfileBloc()),
         BlocProvider(create: (context) => AddLocationBloc()),
-        // BlocProvider(create: (context) => InviteFriendsBloc(context.read<UserProfileService>())),
+        BlocProvider(create: (context) => InviteFriendsBloc(context.read<UserProfileService>())),
       ],
       child: const MyApp(),
     );

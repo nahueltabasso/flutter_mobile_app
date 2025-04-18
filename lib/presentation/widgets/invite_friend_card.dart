@@ -1,21 +1,37 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:techconnect_mobile/models/user_profile_dto.dart';
+import 'package:techconnect_mobile/presentation/blocs/profile/invite-friends/invite_friends_bloc.dart';
 import 'package:techconnect_mobile/presentation/widgets/circle_avatar_photo.dart';
 import 'package:techconnect_mobile/presentation/widgets/username_text.dart';
+import 'package:techconnect_mobile/services/dialog_service.dart';
+import 'package:techconnect_mobile/services/user_profile_service.dart';
 
 // ignore: must_be_immutable
 class InviteFriendCard extends StatelessWidget {
 
   final UserProfileDto userProfileDto;
-  bool? flagButton = true;
+  // bool? flagButton = true;
+  final ValueNotifier<bool> flagButtonNotifier = ValueNotifier<bool>(true);
 
   InviteFriendCard({super.key, required this.userProfileDto}) {
-    flagButton = true;
+    // flagButton = true;
   }
 
   void _inviteFriend(BuildContext context) {
     // Implement the logic to invite a friend
     print("Inviting friend: ${userProfileDto.firstName}");
+    final userProfileService = context.read<UserProfileService>();
+    final fromUser = userProfileService.loggedUserProfile;
+    context.read<InviteFriendsBloc>().add(InviteFriend(fromUser!, userProfileDto));
+    flagButtonNotifier.value = false;
+    final msg = 'La solicitud de amistad a ${userProfileDto.firstName} se ha enviado correctamente';
+    DialogService.showSuccessDialogAlert(context, 'Solicitud enviada!', msg, null);
+
+  }
+
+  String truncateWithEllipsis(int cutoff, String text) {
+    return (text.length <= cutoff) ? text : '${text.substring(0, cutoff)}...';
   }
 
   @override
@@ -50,7 +66,7 @@ class InviteFriendCard extends StatelessWidget {
                     const SizedBox(height: 10),
 
                     Text(
-                      'Enviar una solicitud a ${userProfileDto.firstName}',
+                truncateWithEllipsis(30, 'Enviar una solicitud a ${userProfileDto.firstName}'),
                       style: const TextStyle(fontStyle: FontStyle.italic, fontWeight: FontWeight.w400)
                     )
                   ],
@@ -65,8 +81,8 @@ class InviteFriendCard extends StatelessWidget {
                   style: TextButton.styleFrom(
                     foregroundColor: Colors.lightBlue
                   ),
-                  onPressed: flagButton != true ? null : () => _inviteFriend(context),
-                  child: flagButton == true ? const Text('Enviar solicitud') : const Text('Solicitud enviada'), 
+                  onPressed: flagButtonNotifier.value != true ? null : () => _inviteFriend(context),
+                  child: flagButtonNotifier.value == true ? const Text('Enviar solicitud') : const Text('Solicitud enviada'), 
                 ),
               )
             ],
