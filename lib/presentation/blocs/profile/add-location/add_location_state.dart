@@ -6,6 +6,7 @@ class AddLocationState extends Equatable {
   final BitmapDescriptor icon;
   final bool isLoading;
   final bool navigate;
+  final bool showError;
 
   const AddLocationState({
     this.markers = const {}, // Valor predeterminado
@@ -13,6 +14,7 @@ class AddLocationState extends Equatable {
     this.icon = BitmapDescriptor.defaultMarker,
     this.isLoading = false,
     this.navigate = false,
+    this.showError = false
   });
 
   AddLocationState copyWith({
@@ -21,6 +23,7 @@ class AddLocationState extends Equatable {
     BitmapDescriptor? icon,
     bool? isLoading,
     bool? navigate, 
+    bool? showError
   }) {
     return AddLocationState(
       markers: markers ?? this.markers,
@@ -28,9 +31,10 @@ class AddLocationState extends Equatable {
       icon: icon ?? this.icon,
       isLoading: isLoading ?? this.isLoading,
       navigate: navigate ?? this.navigate,  
+      showError: showError ?? this.showError,
     );
   }
 
   @override
-  List<Object> get props => [markers, mapType, icon, isLoading, navigate];
+  List<Object> get props => [markers, mapType, icon, isLoading, navigate, showError];
 }

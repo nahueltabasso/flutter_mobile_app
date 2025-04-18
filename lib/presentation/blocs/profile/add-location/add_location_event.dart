@@ -38,3 +38,6 @@ class OnSubmitNewLocation extends AddLocationEvent {
   @override
   List<Object> get props => [context];  
 }
+
+class ResetErrorDialog extends AddLocationEvent {}
+

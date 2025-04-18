@@ -16,6 +16,7 @@ class AddLocationBloc extends Bloc<AddLocationEvent, AddLocationState> {
     on<ChangeMapType>((event, emit) => _onChangeMapType(event, emit));
     on<SetShowDialogFlag>((event, emit) => _setShowDialogFlag(event, emit));
     on<OnSubmitNewLocation>((event, emit) => _onSubmitNewLocation(event, emit));
+    on<ResetErrorDialog>((event, emit) => _onResetErrorDialog(event, emit));
   }
 
 
@@ -32,11 +33,12 @@ void _onAddMarker(AddLocation event, Emitter<AddLocationState> emit) {
   emit(state.copyWith(
     markers: {...state.markers, newMarker},
   ));
+
+  print("Markers despues de agregar: ${state.markers}");
 }
 
 
   void _onRemoveMarker(RemoveLocation event, Emitter<AddLocationState> emit) {
-
     final updatedMarkers = state.markers
         .where((marker) => marker.position != event.position)
         .toSet();
@@ -53,8 +55,8 @@ void _onAddMarker(AddLocation event, Emitter<AddLocationState> emit) {
   }
 
   void _setShowDialogFlag(SetShowDialogFlag event, Emitter<AddLocationState> emit) {
-    // emit(state.copyWith(showDialog: false));
-    print(state);
+    emit(state.copyWith(navigate: false));
+    print("ESTADO DESPUES DE RESETEAR BANDERA $state");
   }
 
   Future<void> _onSubmitNewLocation(OnSubmitNewLocation event, Emitter<AddLocationState> emit) async {
@@ -71,9 +73,23 @@ void _onAddMarker(AddLocation event, Emitter<AddLocationState> emit) {
     } else {
       position = state.markers.last.position;
     }
-    LocationDto? response = await userProfileService.saveUserLocation(event.context, position);
-    if (response != null) {
+
+    print("Positiong geografica antes del request $position");
+    try {
+      LocationDto? response = await userProfileService.saveUserLocation(position);
+      if (response == null) {
+        print("Entra a este if a mostrar el dialog");
+        emit(state.copyWith(isLoading: false));
+        print("Mostro el dialog correctamente");
+        return;
+      }
       emit(state.copyWith(isLoading: false, navigate: true));
+    } catch (e) {
+      print("Error al guardar la ubicacion: $e");
     }
+  }
+
+  void _onResetErrorDialog(ResetErrorDialog event, Emitter<AddLocationState> emit) {
+    emit(state.copyWith(showError: false));
   }
 }

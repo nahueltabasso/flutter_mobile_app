@@ -87,7 +87,7 @@ class CompleteProfileBloc extends Bloc<CompleteProfileEvent, CompleteProfileStat
       if (response != null) {
         if (response is UserProfileDto) {
           emit(state.copyWith(isLoading: false));
-          Navigator.push(event.context, MaterialPageRoute(builder: (context) => const LocationForm()));
+          Navigator.push(event.context, MaterialPageRoute(builder: (context) => LocationForm()));
           DialogService.showSuccessDialogAlert(event.context, 'Perfil creado correctamente', '', null);
         } 
 

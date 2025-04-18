@@ -7,6 +7,7 @@ import 'dart:convert';
 
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:techconnect_mobile/config/shared/constans.dart';
+import 'package:techconnect_mobile/models/friend_request_dto.dart';
 import 'package:techconnect_mobile/models/http_error_dto.dart';
 import 'package:techconnect_mobile/models/location_dto.dart';
 import 'package:techconnect_mobile/models/user_profile_dto.dart';
@@ -69,15 +70,20 @@ class UserProfileService extends ChangeNotifier {
     return request;
   }
 
-  Future<LocationDto?> saveUserLocation(BuildContext context, LatLng position) async {
+  Future<LocationDto?> saveUserLocation(LatLng position) async {
     double lat = position.latitude;
     double long = position.longitude;
     // First consume a reverse geocoding to retrieve a data from gps point
     // To do this use a Nominatim from OSM(Open Street Map) that is a open source
     // map library that offer a free geocoding APIs
     String url = 'https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=$lat&lon=$long';
+    print("URL $url");
     final geoResponse = await http.get(Uri.parse(url));
+    print("LLEGA ACA $geoResponse");
+    print("status geo ${geoResponse.statusCode}");
+    print("Body geo ${geoResponse.body}");
     if (geoResponse.statusCode == 200) {
+      print("Entra a la condicion");
       Map<String, dynamic> responseData = json.decode(geoResponse.body);
       // Stay with address object from responseData
       responseData = responseData["address"];
@@ -103,7 +109,9 @@ class UserProfileService extends ChangeNotifier {
       String bodyStr = json.encode(body);
       final url = Uri.http(_baseUrl, '/api/users/location');
       final response = await http.post(url, headers: headers, body: bodyStr);
+      print("Pasa el request, status ${response.statusCode}");
       if (response.statusCode == 201) {
+        print("Entra al if status 201");
         var locationDto = LocationDto.fromRawJson(response.body);
         return locationDto;
       }
@@ -112,15 +120,85 @@ class UserProfileService extends ChangeNotifier {
       print('Error on request: ${response.statusCode}');
       print(response.body);
       final error = HttpErrorDto.fromRawJson(response.body);
-      DialogService.showErrorDialogAlert(context, error.message);
+      // DialogService.showErrorDialogAlert(context, error.message);
       return null;
     } else {
-      DialogService.showErrorDialogAlert(context, CommonConstant.LOCATION_NOT_VALID);
+      // DialogService.showErrorDialogAlert(context, CommonConstant.LOCATION_NOT_VALID);
       return null;
     }
   }
 
+  Future<List<UserProfileDto>?> getPossibleFriends(int userProfileId) async {
+    Map<String, String> headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ${await storage.read(key: 'accessToken')}'
+    };
 
+    final url = Uri.http(_baseUrl, '/api/users/user-profile/suggest-possible-friends/$userProfileId');
+    final response = await http.get(url, headers: headers);
+    if (response.statusCode == 200) {
+      List<UserProfileDto> dtoList = (json.decode(response.body) as List)
+              .map((i) => UserProfileDto.fromJson(i)).toList();
 
+      return dtoList;
+    }
+    return null;
+  }
+
+  Future<UserProfileDto> getUserProfileById(int userProfileId) async {
+    Map<String, String> headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ${await storage.read(key: 'accessToken')}'
+    };
+
+    final url = Uri.http(_baseUrl, '/api/users/user-profile/$userProfileId');
+    final response = await http.get(url, headers: headers);
+
+    return UserProfileDto.fromRawJson(response.body);
+  }
+
+  Future<FriendRequestDto?> sendFriendRequest(FriendRequestDto dto, BuildContext context) async {
+    Map<String, String> headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ${await storage.read(key: 'accessToken')}'
+    };
+
+    try {
+      final url = Uri.http(_baseUrl, '/api/users/friend-request');
+      final response = await http.post(url, headers: headers, body: json.encode(dto));
+      // Validated if the status code is correct
+      if (response.statusCode == 201) {
+        var friendRequestDto = FriendRequestDto.fromRawJson(response.body);
+        return friendRequestDto;
+      }
+      // In this point happened an error
+      if (response.statusCode == 500) {
+        final Map<String, dynamic> error = json.decode(response.body);
+        var msg = "";
+        if (error["error"] == 'TO_USER_NOT_EXITS') msg = CommonConstant.TO_USER_NOT_FOUND;
+        if (error["error"] == 'REQUEST_HAS_ALREADY_BEEN_SUBMITTED') msg = CommonConstant.REQUEST_HAS_ALREADY_BEEN_SUBMITTED;
+        if (error["error"] == 'ALREADY_FRIENDS') msg = CommonConstant.ALREADY_FRIENDS;
+        if (error["error"] == 'NOT_EXISTS_FRIEND_REQUEST') msg = CommonConstant.NOT_EXISTS_FRIEND_REQUEST;
+        
+        print("Error message $msg");
+        // NotificationService.showInfoDialogAlert(context, 'Atencion!', msg, null);
+      }
+      
+    } catch (e) {
+      print(e);      
+    }
+    return null;
+  }
+
+  Future<void> getUserProfileLogged() async {
+    Map<String, String> headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ${await storage.read(key: 'accessToken')}'
+    };
+
+    final url = Uri.http(_baseUrl, '/api/users/user-profile/get-logged-user-profile');
+    final response = await http.get(url, headers: headers);
+    setLoggedUserProfile = UserProfileDto.fromRawJson(response.body);
+  }
 
 }

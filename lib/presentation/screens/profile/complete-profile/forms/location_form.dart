@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:provider/provider.dart';
 import 'package:techconnect_mobile/presentation/blocs/profile/add-location/add_location_bloc.dart';
+import 'package:techconnect_mobile/presentation/blocs/profile/invite-friends/invite_friends_bloc.dart';
 import 'package:techconnect_mobile/presentation/screens/profile/complete-profile/forms/invite_friends_form.dart';
 import 'package:techconnect_mobile/services/dialog_service.dart';
+import 'package:techconnect_mobile/services/user_profile_service.dart';
 
 class LocationForm extends StatelessWidget {
   static const String routeName = '/location';
@@ -27,7 +31,6 @@ class LocationForm extends StatelessWidget {
   void _saveLocation(BuildContext context) async {
     final state = context.read<AddLocationBloc>().state;
     print(state);
-    // Muestra el AlertDialog usando showDialog
     showDialog(
       context: context,
       builder: (context) {
@@ -64,21 +67,23 @@ class LocationForm extends StatelessWidget {
     return BlocListener<AddLocationBloc, AddLocationState>(
       listener: (context, state) {
         if (state.navigate) {
-          Navigator.pushReplacement(
+          Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => const InviteFriendsForm()),
+            MaterialPageRoute(
+              builder: (context) => MultiProvider(
+                providers: [
+                  BlocProvider(
+                    create: (context) => InviteFriendsBloc(context.read<UserProfileService>())..add(LoadNearFriends()),
+                  ),
+                ],
+                child: const InviteFriendsForm(showWelcomeDialog: true),
+              ),
+            ),
           );
-          DialogService.showSuccessDialogAlert(
-            context,
-            'Bienvenido',
-            'Hola, ahora puedes agregar algunos amigos!',
-            null,
-          );
-
-          // Restablecer el estado de navegación
           context.read<AddLocationBloc>().add(SetShowDialogFlag());
         }
       },
+
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Selecciona tu ubicación'),

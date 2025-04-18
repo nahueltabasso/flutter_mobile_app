@@ -19,7 +19,7 @@ final appRouter = GoRouter(
     GoRoute(path: CheckAuthScreen.routeName, builder: (context, state) => const CheckAuthScreen()),
     GoRoute(path: HomeScreen.routeName, builder: (context, state) => const HomeScreen()),
     GoRoute(path: CompleteProfileScreen.routeName, builder: (context, state) => CompleteProfileScreen()),
-    GoRoute(path: LocationForm.routeName, builder: (context, state) => const LocationForm()),
+    GoRoute(path: LocationForm.routeName, builder: (context, state) => LocationForm()),
     GoRoute(path: InviteFriendsForm.routeName, builder: (context, state) => const InviteFriendsForm()),
   ]
 );
